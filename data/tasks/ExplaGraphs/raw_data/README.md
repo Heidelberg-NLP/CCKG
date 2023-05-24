@@ -1,0 +1,1 @@
+The data in this directory is copied from [ExplaGraphs](https://explagraphs.github.io). 

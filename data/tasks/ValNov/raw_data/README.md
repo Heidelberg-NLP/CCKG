@@ -1,0 +1,1 @@
+The data in this directory is copied from [ValNov Task A](https://phhei.github.io/ArgsValidNovel/).

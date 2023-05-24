@@ -1,0 +1,7 @@
+igraph==0.9.11
+sentence-transformers==2.2.0
+torch==1.11.0
+tqdm==4.64.0
+numpy==1.22.3
+huggingface_hub==0.7.0
+supar==1.1.1
