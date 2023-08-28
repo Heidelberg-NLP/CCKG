@@ -11,7 +11,6 @@ def str_to_datahandler(task:str):
     datahandlers = {
         'ExplaGraphs': ExplaGraphs_DataHandler,
         'ValNov': ValNovTaskA_DataHandler,
-        'Neo4J': Neo4J_DataHandler,
         # TDND include datahandler here
     }
     return datahandlers[task]
@@ -447,62 +446,6 @@ class ValNovTaskA_DataHandler(AbstractDataHandler):
         topic_in_dev_split = self.raw_data[index][7]
         return topic_in_dev_split
 
-
-class Neo4J_DataHandler(AbstractDataHandler): # TDND change name
-    def __init__(
-        self, 
-        lookup : str, 
-        datasplit : str, 
-        knowledgegraph : str,
-        sbert_uri : str,
-        device : str,
-        verbose : bool = False,
-        root : str = '../', 
-        r2nl : Optional[str] = None
-    ) -> None:
-        assert datasplit in ['NONE', 'None', None], datasplit
-        self.datasplit = datasplit
-        self.knowledgegraph = knowledgegraph
-
-        fn_raw_data = os.path.join(root, f'data/tasks/Neo4J/raw_data/pc_pairs.json')
-
-        if self.knowledgegraph == 'NONE':
-            print('WARNING: not loading a knowledgegraph. Some functions might not be working. ')
-            fn_knowledgegraph = None
-        else:
-            fn_knowledgegraph = os.path.join(root, f'data/knowledgegraph/{self.knowledgegraph}/{r2nl}_r2nl/graph.pickle')
-
-        if lookup == 'NONE':
-            fn_lookup_dict=None
-        elif lookup.startswith('sbert_constituentparser_'):
-            assert len(lookup) in [len('sbert_constituentparser_?'), len('sbert_constituentparser_??')], (lookup, 'in principle higher values are possible. If that is what you want then just delete this assertion. I just put it here to avoid matchings like `sbert-constituentparser_random-word_5`')
-            num_edges = int(lookup[len('sbert_constituentparser_'):])
-            fn_lookup_dict = os.path.join(root, f'data/tasks/Neo4J/lookups/{r2nl}_r2nl/{self.knowledgegraph}/sbert_constituentparser/numedges={num_edges}.json')
-        elif lookup.startswith('sbert_'):
-            assert len(lookup) in [len('sbert_?'), len('sbert_??')], (lookup, 'in principle higher values for `m` (i.e. more `?`) are possible. If that is what you want then just delete this assertion. I just put it here to avoid matchings like `sbert_random-word_5`')
-            num_edges = int(lookup[len('sbert_'):])
-            fn_lookup_dict = os.path.join(root, f'data/tasks/Neo4J/lookups/{r2nl}_r2nl/{self.knowledgegraph}/sbert/numedges={num_edges}.json')
-        else:
-            raise ValueError(lookup)
-
-        super().__init__(
-            fn_raw_data=fn_raw_data, 
-            fn_knowledgegraph=fn_knowledgegraph,
-            fn_lookup_dict=fn_lookup_dict,
-            sbert_uri=sbert_uri,
-            device=device,
-            verbose=verbose
-        )
-
-    def load_raw_data(self, fn:str) -> list:
-        raw_data = json.load(open(fn, 'r'))
-        raw_data = [(d[0], d[1], unicodedata.normalize('NFKD', d[2]).encode('ascii', 'ignore').decode('utf-8'), unicodedata.normalize('NFKD', d[3]).encode('ascii', 'ignore').decode('utf-8')) for d in raw_data]
-        return raw_data
-
-    def get_premise_and_conclusion(self, index:int) -> Tuple[str]:
-        premise = self.raw_data[index][2]
-        conclusion = self.raw_data[index][3]
-        return premise, conclusion
 
 """
 class ExampleNewData_DataHandler(AbstractDataHandler): # TDND change name
