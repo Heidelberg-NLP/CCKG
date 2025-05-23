@@ -41,7 +41,7 @@ Please refer to section 7 if you want to use a different knowledge graph.
 ## 2. Concept Extraction
 You can extract concepts and save them to lookup dictionaries by running
 ```bash
-bash_scripts/concept_extractions.sh
+bash_scripts/concept_extraction.sh
 ```
 In the script you can adjust the setting, e.g. what task, datasplit and / or knowledge graph you want to use. This script yields dictionaries with lookups of what concepts belong to which sentences. The keys of the dictionaries are the lower-cased sentences. 
 
